@@ -1,0 +1,68 @@
+@import '~@/styles/base.less';
+
+.navbar {
+  width: 100%;
+  display: flex;
+  padding: 1rem;
+  justify-content: space-between;
+  align-items: center;
+
+  &-item {
+    margin: 0 1rem;
+    cursor: pointer;
+  }
+
+  .logo {
+    width: 3rem;
+    cursor: pointer;
+  }
+
+  .menu {
+    color: white;
+    display: none;
+    list-style: none;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex: initial;
+
+    .navbarItem {
+      margin-left: 1rem;
+      margin-right: 1rem;
+      cursor: pointer;
+    }  
+
+    .menuItem {
+      background-color: @blue;
+      padding: 0.5rem 1.75rem;
+      margin: 0 1rem;
+      border-radius: 9999px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: @blue-hover;
+      }
+    }
+  }
+
+  .toggle-menu {
+    flex: none;
+    position: relative;
+
+    &-item {
+      text-align: right;
+      margin: 0.5rem 0;
+    }
+
+    .menu-icon {
+      color: white;
+      cursor: pointer;
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .navbar .menu {
+    display: flex;
+  }
+}
