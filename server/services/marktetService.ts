@@ -99,8 +99,6 @@ const calculateFinalPrice = (bidItem: any) => {
 export const getBidsFromHistory = (userId: string, bidId?: string, price?: string, startTime?: string, closeTime?: string, quantity?: string) => {
     let filteredBids = listOfBidItems.filter(bid => bid.userId === userId);
 
-    console.log(listOfBidItems)
-
     if (bidId) {
         filteredBids = filteredBids.filter(bid => bid.bidId === bidId);
     }

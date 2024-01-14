@@ -32,7 +32,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 }
                 return response.json()
             })
-            .then(data => console.log(data))
             .catch(error => console.error('Error:', error));
     }, [authToken])
 

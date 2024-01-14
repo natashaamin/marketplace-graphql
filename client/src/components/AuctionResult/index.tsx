@@ -136,7 +136,6 @@ const AuctionResultTable = ({ bidsData, historyData }: any) => {
             return response.json();
         })
         .then(data => {
-          console.log(data,"hello")
             if (isMounted && data.data.length != 0) {
                setChartData(data.data)
             }
@@ -150,8 +149,6 @@ const AuctionResultTable = ({ bidsData, historyData }: any) => {
     }
 }, [authToken, history, bidsData]);
 
-console.log(chartData,"hello")
-
   return (
     <>
       {(chartData?.length !== 0) && <DemoHistoryChart historyData={chartData} />}
@@ -161,7 +158,6 @@ console.log(chartData,"hello")
         headerTitle="Result"
         rowKey="key"
         request={async (params, sort, filter) => {
-          console.log(params,"hello")
           const queryString = new URLSearchParams(params).toString();
           const url = `http://localhost:3001/marketplace/getHistory?${queryString}`;
 

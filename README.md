@@ -4,6 +4,12 @@
 
 ## To Run Client Side
 
+Navigate to client folder
+
+```bash
+$ cd client
+```
+
 Install dependencies,
 
 ```bash

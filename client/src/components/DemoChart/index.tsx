@@ -18,7 +18,7 @@ const DemoChart = () => {
         setData(json)
       })
       .catch((error) => {
-        console.log('fetch data failed', error);
+        console.error('fetch data failed', error);
       });
   };
 
