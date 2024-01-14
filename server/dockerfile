@@ -4,21 +4,17 @@ FROM node:18
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy server/package.json and server/package-lock.json to the working directory
-COPY server/package*.json ./server/
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
 
-# Copy client/package.json and client/package-lock.json to the working directory
-# COPY client/package*.json ./client/
-
-# Install dependencies for both the server and client
-RUN cd server && yarn
-# RUN cd client && yarn
+# Install app dependencies
+RUN npm install
 
 # Copy the rest of your application code to the container
 COPY . .
 
-# Expose the port your Node.js app is running on (if needed)
+# Expose the port your Node.js app is running on
 EXPOSE 3000
 
-# Define the command to run your Node.js app (adjust as needed)
+# Define the command to run your Node.js app
 CMD ["node", "server.js"]
