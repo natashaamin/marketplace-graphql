@@ -5,3 +5,11 @@ command = "yarn build"
 
 [build.environment]
     NODE_ENV = "production"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://marketplace-server-69nj.onrender.com/"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Access-Control-Allow-Credentials = "true"
