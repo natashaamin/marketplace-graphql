@@ -11,7 +11,7 @@ const DemoChart = () => {
 
   // example json: https://gw.alipayobjects.com/os/bmw-prod/55424a73-7cb8-4f79-b60d-3ab627ac5698.json
   const asyncFetch = () => {
-    fetch('http://localhost:3001/marketplace/getItems')
+    fetch('/api/marketplace/getItems')
       .then((response) => response.json())
       .then((json) => {
         setLoading(false)

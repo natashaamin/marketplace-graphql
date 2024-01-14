@@ -1,5 +1,7 @@
 import { defineConfig } from 'umi';
 
+console.log(process.env.NODE_ENV)
+
 export default defineConfig({
   routes: [
     {
@@ -19,6 +21,13 @@ export default defineConfig({
       ]
     },
   ],
+  proxy: {
+    '/api': {
+      'target': process.env.NODE_ENV === 'development' ? 'http://localhost:3001/' : 'https://marketplace-server-69nj.onrender.com/',
+      'changeOrigin': true,
+      'pathRewrite': { '^/api' : '' },
+    },
+  },
   locale: {
     antd: true,
     baseNavigator: true,

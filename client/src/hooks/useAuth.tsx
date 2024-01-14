@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
     useEffect(() => {
-        fetch("http://localhost:3001/auth/protectedRoute", {
+        fetch("/api/auth/protectedRoute", {
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem('token')}`
             }

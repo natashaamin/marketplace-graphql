@@ -42,7 +42,7 @@ export default () => {
     const handleSubmit = async (value: any) => {
         const { username, password } = value;
         try {
-            const response = await fetch('http://localhost:3001/auth/login', {
+            const response = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`

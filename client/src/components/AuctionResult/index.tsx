@@ -122,7 +122,7 @@ const AuctionResultTable = ({ bidsData, historyData }: any) => {
   useEffect(() => {
     let isMounted = true;
 
-    fetch("http://localhost:3001/marketplace/getTotalTransactions", {
+    fetch("/api/marketplace/getTotalTransactions", {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -159,7 +159,7 @@ const AuctionResultTable = ({ bidsData, historyData }: any) => {
         rowKey="key"
         request={async (params, sort, filter) => {
           const queryString = new URLSearchParams(params).toString();
-          const url = `http://localhost:3001/marketplace/getHistory?${queryString}`;
+          const url = `/apimarketplace/getHistory?${queryString}`;
 
           try {
             const response = await fetch(url, {

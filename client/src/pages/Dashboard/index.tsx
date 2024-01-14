@@ -46,7 +46,7 @@ const Dashboard = () => {
 
     const handleOnBid = () => {
         if (isConnected || authToken) {
-            fetch("http://localhost:3001/marketplace/sendBid", {
+            fetch("/api/marketplace/sendBid", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ const Dashboard = () => {
                         form.resetFields();
                         setTab('tab2');
                         const callHistory =
-                            fetch("http://localhost:3001/marketplace/getHistory", {
+                            fetch("/apimarketplace/getHistory", {
                                 method: 'GET',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ const Dashboard = () => {
 
 
                         const callTransactions =
-                            fetch("http://localhost:3001/marketplace/getTotalTransactions", {
+                            fetch("/apimarketplace/getTotalTransactions", {
                                 method: 'GET',
                                 headers: {
                                     'Content-Type': 'application/json',
