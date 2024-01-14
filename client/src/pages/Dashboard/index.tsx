@@ -28,6 +28,8 @@ const Dashboard = () => {
     const deadline = Date.now() + 15 * 60 * 1000;
     const [api, contextHolder] = notification.useNotification();
 
+    console.log(process.env.NODE_ENV,">>> env")
+
     const handleChange = (e: any) => {
         e.preventDefault();
     }
