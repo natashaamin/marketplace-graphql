@@ -7,8 +7,11 @@ WORKDIR /app
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-# Install app dependencies
-RUN npm install
+# Install Yarn
+RUN npm install -g yarn
+
+# Install app dependencies using Yarn
+RUN yarn install
 
 # Copy the rest of your application code to the container
 COPY . .
@@ -16,5 +19,5 @@ COPY . .
 # Expose the port your Node.js app is running on
 EXPOSE 3000
 
-# Define the command to run your Node.js app
+# Define the command to run your TypeScript entry file using ts-node
 CMD ["npx", "ts-node", "server.ts"]
