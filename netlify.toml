@@ -2,3 +2,8 @@
 base = "/client"
 publish = "/dist"
 command = "yarn build"
+
+[[redirects]]
+  from = "/api/v1/*"
+  to = "/.netlify/functions/v1"
+  status = 200
