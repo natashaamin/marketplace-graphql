@@ -4,6 +4,7 @@
   "description": "marketplace server",
   "main": "server.ts",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "build": "node server.ts",
     "dev": "nodemon --watch 'src/**/*' -e ts,tsx --exec 'ts-node' server.ts"
