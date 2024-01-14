@@ -1,0 +1,17 @@
+{
+    "name": "marketplace-app",
+    "version": "1.0.0",
+    "description": "marketplace application",
+    "license": "MIT",
+    "scripts": {
+      "build": "",
+      "dev": ""
+    },
+    "dependencies": {
+      
+    },
+    "devDependencies": {
+     
+    }
+  }
+  

@@ -2,10 +2,10 @@
   "name": "marketplace-server",
   "version": "1.0.0",
   "description": "marketplace server",
-  "main": "index.js",
+  "main": "server.ts",
   "license": "MIT",
   "scripts": {
-    "build": "node build/server.js",
+    "build": "node server.ts",
     "dev": "nodemon --watch 'src/**/*' -e ts,tsx --exec 'ts-node' server.ts"
   },
   "dependencies": {
