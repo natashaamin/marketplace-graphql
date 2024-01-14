@@ -8,10 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install Yarn
-RUN npm install -g yarn
-
-# Install app dependencies using Yarn
-RUN yarn install
+RUN npm install
 
 # Copy the rest of your application code to the container
 COPY . .
