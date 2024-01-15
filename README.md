@@ -2,42 +2,13 @@
 
 ## Getting Started
 
-## To Run Client Side
-
-Navigate to client folder
+## To install all dependencies
 
 ```bash
-$ cd client
+$ yarn install:all
 ```
 
-Install dependencies,
-
-```bash
-$ yarn
-```
-
-Start the dev server,
-
-```bash
-$ yarn start
-```
-
-
-## To Run Server Side
-
-Navigate to server folder
-
-```bash
-$ cd server
-```
-
-Install dependencies, 
-
-```bash
-$ yarn
-```
-
-Start the dev server,
+Start client and server
 
 ```bash
 $ yarn start
