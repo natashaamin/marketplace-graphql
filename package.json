@@ -1,0 +1,27 @@
+{
+  "name": "marketplace-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/natashaamin/marketplace-app.git",
+  "author": "natasha",
+  "license": "MIT",
+  "scripts": {
+    "install:client": "cd client && yarn install",
+    "install:server": "cd server && yarn install",
+    "install:all": "yarn install:client && yarn install:server",
+    "start:client": "cd client && yarn start",
+    "start:server": "cd server && yarn dev",
+    "start": "concurrently \"yarn start:client\" \"yarn start:server\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.0.4",
+    "dayjs": "^1.11.10",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "lint-staged": "^10.0.7",
+    "prettier": "^2.2.0",
+    "nodemon": "^3.0.2"
+  }
+}

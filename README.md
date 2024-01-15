@@ -42,8 +42,3 @@ Start the dev server,
 ```bash
 $ yarn start
 ```
-
-code
-PARAM_MISSING
-SUCCESS
-ACCESS_DENIED
