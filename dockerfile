@@ -10,14 +10,17 @@ COPY package.json yarn.lock ./
 # Install all dependencies
 RUN yarn install
 
+# Install server dependencies
+RUN yarn install:server
+
 # Copy the server directory
 COPY server/ ./server/
 
 # Set the working directory to the server
-WORKDIR /app/server
+WORKDIR /app
 
 # Expose the port your Node.js app is running on
 EXPOSE 3001
 
 # Define the command to run your application
-CMD ["yarn", "dev"]
+CMD ["yarn", "start"]
