@@ -4,23 +4,20 @@ FROM node:18
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy package.json to the working directory
-COPY package*.json ./
+# Copy the root package.json and yarn.lock
+COPY package.json yarn.lock ./
 
-# Install all dependencies in the root folder
-RUN yarn install
+# Install all dependencies
+RUN yarn install:all
 
-# Copy server code to the container
-COPY server/ /app/server
+# Copy the server directory
+COPY server/ ./server/
 
-# Change to the server directory
+# Set the working directory to the server
 WORKDIR /app/server
 
-# Install server dependencies
-RUN yarn install:server
-
 # Expose the port your Node.js app is running on
-EXPOSE 3000
+EXPOSE 3001
 
-# Define the command to start your server application
-CMD ["yarn", "start:server"]
+# Define the command to run your application
+CMD ["yarn", "dev"]
