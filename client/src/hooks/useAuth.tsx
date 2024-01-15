@@ -19,21 +19,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [authToken, setAuthToken] = useState(sessionStorage.getItem('token'))
 
 
-    useEffect(() => {
-        fetch("/api/auth/protectedRoute", {
-            headers: {
-                Authorization: `Bearer ${sessionStorage.getItem('token')}`
-            }
-        })
-            .then((response: any) => {
-                if (response.status === 401) {
-                    sessionStorage.removeItem('token')
-                    setAuthToken(null)
-                }
-                return response.json()
-            })
-            .catch(error => console.error('Error:', error));
-    }, [authToken])
+    // useEffect(() => {
+    //     fetch("/api/auth/protectedRoute", {
+    //         headers: {
+    //             Authorization: `Bearer ${sessionStorage.getItem('token')}`
+    //         }
+    //     })
+    //         .then((response: any) => {
+    //             if (response.status === 401) {
+    //                 sessionStorage.removeItem('token')
+    //                 setAuthToken(null)
+    //             }
+    //             return response.json()
+    //         })
+    //         .catch(error => console.error('Error:', error));
+    // }, [authToken])
 
     const login = (token: any) => {
         sessionStorage.setItem('token', token);
