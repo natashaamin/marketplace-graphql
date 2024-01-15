@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 
 # Install all dependencies
-RUN yarn install:all
+RUN yarn install
 
 # Copy the server directory
 COPY server/ ./server/
