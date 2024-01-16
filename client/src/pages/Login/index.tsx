@@ -52,7 +52,7 @@ export default () => {
             const data = await response.json();
             if (response.ok && data.authenticated) {
                 login(data.token)
-                history.replace('/')
+                history.replace('/dashboard')
             } else {
                 message.error("Login failed: " + (data.message || 'Unauthorized'));
             }
@@ -75,7 +75,7 @@ export default () => {
                 .then((data: any) => {
                     if (data.authenticated) {
                         login(data.sessionToken)
-                        history.replace('/')
+                        history.replace('/dashboard')
                     }
                 })
                 .catch(error => console.error('Error:', error));

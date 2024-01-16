@@ -14,7 +14,7 @@ export default defineConfig({
           component: '@/pages/Login'
         },
         {
-          path: '/',
+          path: '/dashboard',
           name: "Dashboard",
           component: '@/pages/Dashboard'
         },
