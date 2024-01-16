@@ -10,7 +10,7 @@ import * as authService from './services/authService';
 import bcrypt from 'bcryptjs';
 import cors from 'cors';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
-import { verifySignature } from './utils/util';
+import { generateToken, verifySignature } from './utils/util';
 
 const app: Application = express();
 
@@ -41,10 +41,9 @@ passport.use(new JwtStrategy(jwtOptions, (jwtPayload: any, done: AuthenticateCal
 passport.use('keplr', new CustomStrategy((req: any, done: any) => {
     if (!req.isAuthenticated()) {
         const { walletAddress } = req.body;
-        console.log(walletAddress, "rachel");
         const isValid = verifySignature(walletAddress);
         if (isValid) {
-            done(null, { walletAddress });
+            done(null, { walletAddress: generateToken('s') });
         } else {
             done(null, false, { message: 'Signature verification failed' });
         }
@@ -52,21 +51,23 @@ passport.use('keplr', new CustomStrategy((req: any, done: any) => {
 }));
 
 
-passport.serializeUser((user: any, done) => done(null, user));
-passport.deserializeUser((obj: any, done) => {
-    done(null, obj);
+passport.serializeUser((user: any, done) => done(null, user.username));
+passport.deserializeUser((username: string, done) => {
+    const user = authService.findUserByUsername(username);
+    if (user) {
+        done(null, user);
+    } else {
+        done(new Error('User not found'), null);
+    }
 });
-
 
 app.use(cors())
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(session({
-    secret: 'secret', resave: false, saveUninitialized: false, cookie: {
-        secure: false,
-        maxAge: 1000 * 60 * 60 * 24
-    }
-}));
+app.use(session({ secret: 'secret', resave: false, saveUninitialized: false, cookie: {
+    secure: false,
+    maxAge: 1000 * 60 * 60 * 24
+} }));
 app.use(passport.initialize());
 app.use(passport.session());
 

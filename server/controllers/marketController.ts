@@ -9,9 +9,10 @@ export const getListOfMarketPlace = (req: Request, res: Response): void => {
 export const postBidding = (req: Request, res: Response): void => {
     const { quantity, startTime, closeTime, price } = req.body;
     const currentDate = new Date().toISOString().split('T')[0];
+    console.log(req,"rachel")
 
     const user = req.user as { userId: string, walletAddress: any }; 
-    if (!user || !user.userId || !user.walletAddress) {
+    if (!user || !user.userId) {
         res.status(401).json({ message: "Unauthorized" });
     }
 
@@ -39,7 +40,7 @@ export const postBidding = (req: Request, res: Response): void => {
 export const getBidHistory = (req: Request, res: Response) => {
     try {
         const user = req.user as { userId: string, walletAddress: any }; 
-        if (!user || !user.userId || !user.walletAddress) {
+        if (!user || !user.userId) {
             return res.status(401).json({ message: "Unauthorized" });
         }
 
@@ -58,7 +59,7 @@ export const getBidHistory = (req: Request, res: Response) => {
 export const getTotalTransactions = (req: Request, res: Response) => {
     try {
         const user = req.user as { userId: string, walletAddress: any }; 
-        if (!user || !user.userId || !user.walletAddress) {
+        if (!user || !user.userId) {
             return res.status(401).json({ message: "Unauthorized" });
         }
 
