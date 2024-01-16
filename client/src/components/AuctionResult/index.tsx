@@ -5,16 +5,24 @@ import { history } from '@umijs/max';
 import React, { useEffect, useState } from 'react';
 import DemoHistoryChart from '../DemoHistoryChart';
 import { formatDateTimeCustom } from '@/utils/util';
+import { useAccount } from 'graz';
 
 const AuctionResultTable = ({ bidsData, historyData }: any) => {
   const { authToken } = useAuth();
+  const { isConnected } = useAccount();
   const [data, setData] = useState();
   const [chartData, setChartData] = useState<any>(null);
 
   useEffect(() => {
+    if (authToken === null || !isConnected) {
+      history.replace('/login');
+    }
+  }, [authToken, isConnected]);
+
+  useEffect(() => {
     setData(bidsData);
-    setChartData(historyData)
-  },[bidsData, historyData])
+    setChartData(historyData);
+  }, [bidsData, historyData]);
 
   const columns: ProColumns<API.IHistoryItems>[] = [
     {
@@ -121,33 +129,32 @@ const AuctionResultTable = ({ bidsData, historyData }: any) => {
 
   useEffect(() => {
     let isMounted = true;
-
     fetch("/api/marketplace/getTotalTransactions", {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`
-        },
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
     })
-        .then(response => {
-            if (response.status === 401) {
-                if (isMounted) history.replace("/login");
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (isMounted && data.data.length != 0) {
-               setChartData(data.data)
-            }
-        })
-        .catch(error => {
-            if (isMounted) console.error('Error:', error);
-        });
+    .then(response => {
+      if (response.status === 401) {
+          if (isMounted) history.replace("/login");
+      }
+      return response.json();
+      })
+    .then(data => {
+        if (isMounted && data.data.length != 0) {
+          setChartData(data.data)
+        }
+      })
+      .catch(error => {
+        if (isMounted) console.error('Error:', error);
+      });
 
     return () => {
-        isMounted = false; 
+      isMounted = false;
     }
-}, [authToken, history, bidsData]);
+  }, [history, bidsData, authToken, isConnected]);
 
   return (
     <>
@@ -170,9 +177,9 @@ const AuctionResultTable = ({ bidsData, historyData }: any) => {
               },
             });
 
-            if (response.status === 401) {
-              history.replace("/login");
-            }
+            // if (response.status === 401) {
+            //   history.replace("/login");
+            // }
 
             if (!response.ok) {
               throw new Error('Network response was not ok');

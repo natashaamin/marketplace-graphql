@@ -38,10 +38,14 @@ const timeStringToSeconds = (timeString: any) => {
     return hours * 3600 + minutes * 60 + seconds;
 };
 
+const verifySignature = (walletAddress: any) => {
+    return true;
+}
 
 export {
     generateDummyItems,
     generateToken,
     waitTimePromise,
-    timeStringToSeconds
+    timeStringToSeconds,
+    verifySignature
 }

@@ -19,7 +19,7 @@ import type { CSSProperties } from 'react';
 import React, { useState } from 'react';
 import logo from '@/assets/logo.png';
 import { history } from '@umijs/max';
-import { WalletType, connect } from 'graz';
+import { WalletType, connect, useAccount } from 'graz';
 import KeplrLogo from '@/assets/kepler.svg';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -28,6 +28,7 @@ type LoginType = 'phone' | 'account';
 export default () => {
     const { token } = theme.useToken();
     const { login } = useAuth();
+    const { data: account, isConnected } = useAccount();
     const [loginType, setLoginType] = useState<LoginType>('account');
 
     const iconStyles: CSSProperties = {
@@ -60,6 +61,29 @@ export default () => {
             message.error("An error occurred during login.");
         }
     }
+
+    const connectToKeplr = () => {
+        connect({ chainId: ["cosmoshub-4"], walletType: WalletType.KEPLR}).then((data)=> {
+            fetch("/api/auth/authenticate", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    walletAddress: account?.address,
+                })
+            })
+                .then((response: any) => { return response.json() })
+                .then((data: any) => {
+                    if (data.authenticated) {
+                        login(data.sessionToken)
+                        history.replace('/')
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+    
+
+        });
+
+    }
     
 
     return (
@@ -72,7 +96,7 @@ export default () => {
                     actions={
                         <Space>
                             Other
-                            <img src={KeplrLogo} style={iconStyles} alt="Keplr Logo" onClick={() => connect({ chainId: ["cosmoshub-4"], walletType: WalletType.KEPLR})}/>
+                            <img src={KeplrLogo} style={iconStyles} alt="Keplr Logo" onClick={connectToKeplr}/>
                         </Space>
                     }
                     onFinish={async (value) => await handleSubmit(value)}
@@ -152,22 +176,6 @@ export default () => {
                             />
                         </>
                     )}
-                    <div
-                        style={{
-                            marginBlockEnd: 24,
-                        }}
-                    >
-                        <ProFormCheckbox noStyle name="autoLogin">
-                            Remember me
-                        </ProFormCheckbox>
-                        <a
-                            style={{
-                                float: 'right',
-                            }}
-                        >
-                            Forgot Password
-                        </a>
-                    </div>
                 </LoginForm>
             </div>
         </ProConfigProvider>

@@ -24,7 +24,7 @@ export const postBidding = (req: Request, res: Response): void => {
          });
     }
 
-    marketServices.storeBidding({ 
+    const response = marketServices.storeBidding({ 
         userId: user.userId, 
         currentDate: currentDate,
         quantity, startTime, 
@@ -33,7 +33,9 @@ export const postBidding = (req: Request, res: Response): void => {
    
     res.status(200).json({ 
         code: "SUCCESS",
-        message: 'Bid successfully stored' });
+        data: {
+            listOfItems: response
+        } });
 }
 
 export const getBidHistory = (req: Request, res: Response) => {

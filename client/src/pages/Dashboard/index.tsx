@@ -1,16 +1,15 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import styles from './index.less';
 import { useTranslation as t } from "@/hooks/useTranslation";
 import { Button, TimePicker, TimeRangePickerProps, Form, Input, message, Card, Statistic, notification } from "antd";
 import { AuctionResultTable, CustomizeModal, DemoChart, NavBar } from "@/components";
-import { ProCard, ProColumns, ProTable } from "@ant-design/pro-components";
+import { ProCard } from "@ant-design/pro-components";
 import { connect, useAccount, useConnect } from "graz";
 import { history } from "@umijs/max";
 import { useAuth } from "@/hooks/useAuth";
 import { TimePickerProps } from "antd/lib";
-import Countdown from "antd/es/statistic/Countdown";
-import { ArrowUpOutlined } from "@ant-design/icons";
 import { CustomizeModalHandles } from "@/components/CustomizeModal";
+import Countdown from "antd/es/statistic/Countdown";
 import { NotificationPlacement } from "antd/es/notification/interface";
 
 const Dashboard = () => {
@@ -20,15 +19,16 @@ const Dashboard = () => {
     const [bidData, setBidData] = useState<API.IHistoryItems[]>([]);
     const [historyData, setHistoryData] = useState<any[]>([]);
     const [dateString, setDateString] = useState<string | [string, string]>(['', '']);
-    const { isConnected } = useAccount();
     const { authToken } = useAuth();
+    const { isConnected } = useAccount();
     const [form] = Form.useForm();
     const quantity = Form.useWatch('quantity', form);
     const price = Form.useWatch('price', form);
-    const deadline = Date.now() + 15 * 60 * 1000;
+    const [deadline, setDeadLine] = useState(Date.now() + 30 * 1000);
     const [api, contextHolder] = notification.useNotification();
+    const [currentBestBid, setCurrentBestBid] = useState(0)
+    const [countdownPaused, setCountdownPaused] = useState(false);
 
-    console.log(process.env.NODE_ENV,">>> env")
 
     const handleChange = (e: any) => {
         e.preventDefault();
@@ -73,57 +73,20 @@ const Dashboard = () => {
                     }
 
                     if (data.code === "SUCCESS") {
+                        const acceptedItems = data?.data.listOfItems.filter((item: any) => item.status === "ACCEPTED");
+
+                        if (acceptedItems.length > 0) {
+                            const highestPriceItem = acceptedItems.reduce((maxItem: any, currentItem: any) => {
+                                const maxPrice = parseFloat(maxItem.price);
+                                const currentPrice = parseFloat(currentItem.price);
+                                return currentPrice > maxPrice ? currentItem : maxItem;
+                            }, acceptedItems[0]);
+
+                            setCurrentBestBid(highestPriceItem.price);
+                        }
+
                         message.success("Successful")
                         form.resetFields();
-                        setTab('tab2');
-                        const callHistory =
-                            fetch("/apimarketplace/getHistory", {
-                                method: 'GET',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${authToken}`
-                                },
-                            })
-                                .then(response => {
-                                    if (response.status === 401) {
-                                        history.replace("/login")
-                                    }
-                                    return response.json()
-                                })
-                                .catch(error => console.error('Error:', error));
-
-
-                        const callTransactions =
-                            fetch("/apimarketplace/getTotalTransactions", {
-                                method: 'GET',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${authToken}`
-                                },
-                            })
-                                .then(response => {
-                                    if (response.status === 401) {
-                                        history.replace("/login")
-                                    }
-                                    return response.json()
-                                })
-                                .catch(error => console.error('Error:', error));
-
-                        Promise.all([callHistory, callTransactions])
-                            .then(([data1, data2]) => {
-                                const newData = data1.data.map((x: any, index: number) => {
-                                    return {
-                                        key: index,
-                                        ...x
-                                    }
-                                })
-                                setBidData(newData)
-                                setHistoryData(data2)
-                            })
-                            .catch(error => {
-                                console.error('An error occurred:', error);
-                            });
-
                     }
                 })
                 .catch(error => console.error('Error:', error));
@@ -144,13 +107,60 @@ const Dashboard = () => {
 
     const openNotification = (placement: NotificationPlacement) => {
         api.info({
-            message: `Notification ${placement}`,
+            message: `Time's up!`,
             description:
-                'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+                'Here\'s the data for ur transaction.',
             placement,
         });
-    };
 
+        setTab('tab2');
+        const callHistory =
+            fetch("/apimarketplace/getHistory", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+            })
+                .then(response => {
+                    if (response.status === 401) {
+                        history.replace("/login")
+                    }
+                    return response.json()
+                })
+                .catch(error => console.error('Error:', error));
+
+        const callTransactions =
+            fetch("/apimarketplace/getTotalTransactions", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+            })
+                .then(response => {
+                    if (response.status === 401) {
+                        history.replace("/login")
+                    }
+                    return response.json()
+                })
+                .catch(error => console.error('Error:', error));
+
+        Promise.all([callHistory, callTransactions])
+            .then(([data1, data2]) => {
+                const newData = data1.data.map((x: any, index: number) => {
+                    return {
+                        key: index,
+                        ...x
+                    }
+                })
+                setBidData(newData)
+                setHistoryData(data2)
+            })
+            .catch(error => {
+                console.error('An error occurred:', error);
+            });
+    };
 
     return (
         <div className={styles.wrapper}>
@@ -168,13 +178,15 @@ const Dashboard = () => {
                             </ProCard>
                             <ProCard colSpan="30%" className={styles.inputWrapper}>
                                 <Card style={{ marginBottom: '10px' }}>
-                                    <Countdown title="Auction Time Left" value={deadline} format="HH:mm:ss:SSS"
+                                    <Countdown title="Auction Time Left" value={countdownPaused ? 0 : deadline}
+                                        format="HH:mm:ss:SSS"
                                         onFinish={() => openNotification('top')} />
                                 </Card>
+
                                 <Card style={{ marginBottom: '10px' }}>
                                     <Statistic
                                         title="Current Best Bid (cents/MWh)"
-                                        value={11.28}
+                                        value={currentBestBid}
                                         precision={2}
                                         valueStyle={{ color: '#3f8600' }}
                                         suffix="MWh"
@@ -222,6 +234,13 @@ const Dashboard = () => {
                 ],
                 onChange: (key) => {
                     setTab(key);
+                    if (key === 'tab1') {
+                        setCountdownPaused(false);
+                        setDeadLine((rev) => rev)
+                        setCurrentBestBid(0)
+                    } else if (key === 'tab2') {
+                        setCountdownPaused(true);
+                    }
                 },
             }}>
             </ProCard>
