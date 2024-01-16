@@ -17,14 +17,5 @@ router.post('/login', passport.authenticate('local', {
      });
 });
 
-router.get('/protectedRoute', passport.authenticate('jwt', { session: false }), (req, res) => {
-    const userData = {
-        username: req.body.username,
-        email: req.body.email
-    };
-
-    res.json(userData);
-});
-
 
 export default router;
