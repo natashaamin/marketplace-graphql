@@ -4,7 +4,7 @@ import passport from 'passport';
 import { generateToken, verifySignature } from '../utils/util';
 
 const router = Router();
-  
+
 router.post('/login', passport.authenticate('local', {
     session: false,
     failWithError: true
@@ -18,16 +18,27 @@ router.post('/login', passport.authenticate('local', {
     });
 
 
-router.post('/authenticate', authController.flexibleAuthenticate, (req, res) => {
-    const { walletAddress } = req.body;
-    try {
-        if (verifySignature(walletAddress)) {
-            res.status(200).json({ authenticated: true, sessionToken: generateToken(walletAddress) });
+    router.post('/authenticate', passport.authenticate('keplr', {
+        session: true, // Enable session-based authentication
+        failWithError: true
+      }), (req, res) => {
+        const { walletAddress } = req.body;
+        try {
+          if (verifySignature(walletAddress)) {
+            // Serialize the user to make it available in the session
+            req.login({ walletAddress }, (err) => {
+              if (err) {
+                res.status(500).json({ error: "Internal server error" });
+              } else {
+                res.status(200).json({ authenticated: true, sessionToken: generateToken(walletAddress) });
+              }
+            });
+          }
+        } catch (error) {
+          res.status(500).json({ error: "Internal server error" });
         }
-    } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
+      });
+      
 
 
 export default router;

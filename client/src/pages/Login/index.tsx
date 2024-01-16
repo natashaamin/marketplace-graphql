@@ -50,7 +50,7 @@ export default () => {
             });
     
             const data = await response.json();
-            if (response.ok && data.token) {
+            if (response.ok && data.authenticated) {
                 login(data.token)
                 history.replace('/')
             } else {

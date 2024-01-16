@@ -8,13 +8,11 @@ export const getListOfMarketPlace = (req: Request, res: Response): void => {
 
 export const postBidding = (req: Request, res: Response): void => {
     const { quantity, startTime, closeTime, price } = req.body;
-    const user = req.user as { userId: string }; 
     const currentDate = new Date().toISOString().split('T')[0];
 
-    if (!user || !user.userId) {
-        res.status(401).json({ 
-            code: "ACCESS_DENIED",
-            message: "Unauthorized" });
+    const user = req.user as { userId: string, walletAddress: any }; 
+    if (!user || !user.userId || !user.walletAddress) {
+        res.status(401).json({ message: "Unauthorized" });
     }
 
     if (!quantity || !startTime || !closeTime || !price) {
@@ -40,8 +38,8 @@ export const postBidding = (req: Request, res: Response): void => {
 
 export const getBidHistory = (req: Request, res: Response) => {
     try {
-        const user = req.user as { userId: string }; 
-        if (!user || !user.userId) {
+        const user = req.user as { userId: string, walletAddress: any }; 
+        if (!user || !user.userId || !user.walletAddress) {
             return res.status(401).json({ message: "Unauthorized" });
         }
 
@@ -59,8 +57,8 @@ export const getBidHistory = (req: Request, res: Response) => {
 
 export const getTotalTransactions = (req: Request, res: Response) => {
     try {
-        const user = req.user as { userId: string }; 
-        if (!user || !user.userId) {
+        const user = req.user as { userId: string, walletAddress: any }; 
+        if (!user || !user.userId || !user.walletAddress) {
             return res.status(401).json({ message: "Unauthorized" });
         }
 
