@@ -7,10 +7,9 @@
 [build.environment]
   NODE_ENV = "production"
 
-# Redirects
 [[redirects]]
-  from = "/*"
-  to = "https://marketplace-server-69nj.onrender.com/:splat"
+  from = "/api/*"
+  to = "https://marketplace-server-69nj.onrender.com/api/:splat"
   status = 200
   force = true
 
