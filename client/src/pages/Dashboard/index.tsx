@@ -20,7 +20,6 @@ const Dashboard = () => {
     const [historyData, setHistoryData] = useState<any[]>([]);
     const [dateString, setDateString] = useState<string | [string, string]>(['', '']);
     const { authToken } = useAuth();
-    const { isConnected } = useAccount();
     const [form] = Form.useForm();
     const quantity = Form.useWatch('quantity', form);
     const price = Form.useWatch('price', form);
@@ -28,6 +27,7 @@ const Dashboard = () => {
     const [api, contextHolder] = notification.useNotification();
     const [currentBestBid, setCurrentBestBid] = useState(0)
     const [countdownPaused, setCountdownPaused] = useState(false);
+    const { data: account, isConnected } = useAccount();
 
 
     const handleChange = (e: any) => {
@@ -115,12 +115,13 @@ const Dashboard = () => {
 
         setTab('tab2');
         const callHistory =
-            fetch("/apimarketplace/getHistory", {
-                method: 'GET',
+            fetch("/api/marketplace/getHistory", {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${authToken}`
                 },
+                body: JSON.stringify({ walletAddress: account?.bech32Address })
             })
                 .then(response => {
                     if (response.status === 401) {
@@ -131,7 +132,7 @@ const Dashboard = () => {
                 .catch(error => console.error('Error:', error));
 
         const callTransactions =
-            fetch("/apimarketplace/getTotalTransactions", {
+            fetch("/api/marketplace/getTotalTransactions", {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

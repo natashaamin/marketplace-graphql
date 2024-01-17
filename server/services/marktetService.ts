@@ -27,7 +27,7 @@ interface ITransactionDetails {
 
 interface IBidItems {
     bidId?: string;
-    userId?: string;
+    userId?: string | number;
     currentDate: string;
     quantity: string;
     startTime: string;
@@ -96,7 +96,7 @@ const calculateFinalPrice = (bidItem: any) => {
 
 
 
-export const getBidsFromHistory = (userId: string, bidId?: string, price?: string, startTime?: string, closeTime?: string, quantity?: string) => {
+export const getBidsFromHistory = (userId: string | number, bidId?: string, price?: string, startTime?: string, closeTime?: string, quantity?: string) => {
     let filteredBids = listOfBidItems.filter(bid => bid.userId === userId);
 
     if (bidId) {

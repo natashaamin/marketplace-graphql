@@ -6,7 +6,6 @@ export interface IHistoryProps {
 }
 
 const DemoHistoryChart = ({ historyData }: IHistoryProps) => {
-  console.log(historyData,"chartData")
   const config = {
     data: historyData,
     xField: 'month',

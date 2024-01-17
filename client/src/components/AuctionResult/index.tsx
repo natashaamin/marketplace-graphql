@@ -9,7 +9,7 @@ import { useAccount } from 'graz';
 
 const AuctionResultTable = ({ bidsData, historyData }: any) => {
   const { authToken } = useAuth();
-  const { isConnected } = useAccount();
+  const { data: account, isConnected } = useAccount();
   const [data, setData] = useState();
   const [chartData, setChartData] = useState<any>(null);
 
@@ -130,11 +130,12 @@ const AuctionResultTable = ({ bidsData, historyData }: any) => {
   useEffect(() => {
     let isMounted = true;
     fetch("/api/marketplace/getTotalTransactions", {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${authToken}`
       },
+      body: JSON.stringify({ walletAddress: account?.bech32Address })
     })
     .then(response => {
       if (response.status === 401) {
@@ -166,7 +167,7 @@ const AuctionResultTable = ({ bidsData, historyData }: any) => {
         rowKey="key"
         request={async (params, sort, filter) => {
           const queryString = new URLSearchParams(params).toString();
-          const url = `/apimarketplace/getHistory?${queryString}`;
+          const url = `/api/marketplace/getHistory?${queryString}`;
 
           try {
             const response = await fetch(url, {

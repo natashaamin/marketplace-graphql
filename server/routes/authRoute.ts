@@ -30,7 +30,7 @@ router.post('/login', passport.authenticate('local', {
               if (err) {
                 res.status(500).json({ error: "Internal server error" });
               } else {
-                res.status(200).json({ authenticated: true, sessionToken: generateToken(walletAddress) });
+                res.status(200).json({ authenticated: true, sessionToken: generateToken({}) });
               }
             });
           }

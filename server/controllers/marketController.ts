@@ -9,10 +9,9 @@ export const getListOfMarketPlace = (req: Request, res: Response): void => {
 export const postBidding = (req: Request, res: Response): void => {
     const { quantity, startTime, closeTime, price } = req.body;
     const currentDate = new Date().toISOString().split('T')[0];
-    console.log(req,"rachel")
 
-    const user = req.user as { userId: string, walletAddress: any }; 
-    if (!user || !user.userId) {
+    const user = req.user as { userId: string | number, walletAddress: any };        
+    if (user.userId == null && user.walletAddress == null) {
         res.status(401).json({ message: "Unauthorized" });
     }
 
@@ -39,11 +38,10 @@ export const postBidding = (req: Request, res: Response): void => {
 
 export const getBidHistory = (req: Request, res: Response) => {
     try {
-        const user = req.user as { userId: string, walletAddress: any }; 
-        if (!user || !user.userId) {
+        const user = req.user as { userId: string | number, walletAddress: any };   
+        if (user.userId == null && user.walletAddress == null) {
             return res.status(401).json({ message: "Unauthorized" });
         }
-
         const { price, startTime, closeTime, quantity, bidId } = req.query as any;
         const bids =  marketServices.getBidsFromHistory(user.userId, bidId, price, startTime, closeTime, quantity)
         res.status(200).json({ 
@@ -56,13 +54,13 @@ export const getBidHistory = (req: Request, res: Response) => {
     }
 }
 
-export const getTotalTransactions = (req: Request, res: Response) => {
+export const getTotalTransactions = (req: Request, res: Response, next: any) => {
     try {
-        const user = req.user as { userId: string, walletAddress: any }; 
-        if (!user || !user.userId) {
+        const user = req.user as { userId: string | number, walletAddress: any };      
+        if (user.userId == null && user.walletAddress == null) {
             return res.status(401).json({ message: "Unauthorized" });
         }
-
+        
         const response =  marketServices.getTotalTransaction()
         res.status(200).json({ 
             code: "SUCCESS",
