@@ -17,7 +17,6 @@
   to = "https://marketplace-server-69nj.onrender.com/:splat"
   status = 200
   force = true
-  headers = {X-From = "Netlify"}
 
 # Headers
 [[headers]]
