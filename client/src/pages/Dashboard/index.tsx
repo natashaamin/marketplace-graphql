@@ -29,6 +29,8 @@ const Dashboard = () => {
     const [countdownPaused, setCountdownPaused] = useState(false);
     const { data: account, isConnected } = useAccount();
 
+    console.log(process.env.NODE_ENV,">>>env")
+
 
     const handleChange = (e: any) => {
         e.preventDefault();
