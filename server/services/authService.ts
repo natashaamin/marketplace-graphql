@@ -9,8 +9,8 @@ export interface User {
 const dummyUsers: User[] = [
     {
         userId: 1,
-        username: 'a',
-        password: bcrypt.hashSync('a', 10)
+        username: 'user1',
+        password: bcrypt.hashSync('password1', 10)
     }
 ];
 
