@@ -66,8 +66,13 @@ passport.deserializeUser((user: any, done) => {
     }
 });
 
+const corsOptions = {
+    origin: 'https://reliable-belekoy-b39683.netlify.app',
+    optionsSuccessStatus: 200
+};
 
-app.use(cors())
+
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
