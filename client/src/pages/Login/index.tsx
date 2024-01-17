@@ -11,10 +11,11 @@ import {
     ProConfigProvider,
     ProFormCaptcha,
     ProFormCheckbox,
+    ProFormInstance,
     ProFormText,
     setAlpha,
 } from '@ant-design/pro-components';
-import { Space, Tabs, message, theme } from 'antd';
+import { Button, Form, Space, Tabs, message, theme } from 'antd';
 import type { CSSProperties } from 'react';
 import React, { useState } from 'react';
 import logo from '@/assets/logo.png';
@@ -22,6 +23,8 @@ import { history } from '@umijs/max';
 import { WalletType, connect, useAccount } from 'graz';
 import KeplrLogo from '@/assets/kepler.svg';
 import { useAuth } from '@/hooks/useAuth';
+import styles from './index.less';
+import { useForm } from 'antd/es/form/Form';
 
 type LoginType = 'phone' | 'account';
 
@@ -29,7 +32,10 @@ export default () => {
     const { token } = theme.useToken();
     const { login } = useAuth();
     const { data: account, isConnected } = useAccount();
+    const { authToken } = useAuth();
     const [loginType, setLoginType] = useState<LoginType>('account');
+    const [hasLoggedIn, setHasLoggedIn] = useState<boolean>(false);
+    const formRef = useForm<ProFormInstance>();
 
     const iconStyles: CSSProperties = {
         marginInlineStart: '16px',
@@ -48,11 +54,11 @@ export default () => {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
             });
-    
+
             const data = await response.json();
             if (response.ok && data.authenticated) {
                 login(data.token)
-                history.replace('/dashboard')
+                history.push('/dashboard')
             } else {
                 message.error("Login failed: " + (data.message || 'Unauthorized'));
             }
@@ -62,8 +68,37 @@ export default () => {
         }
     }
 
+    const handleRegister = async (value: any) => {
+        const { username, password } = value;
+        try {
+            await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            })
+                .then((response) => { return response.json(); })
+                .then((data: any) => {
+                    if (data.code === 'USER_EXISTS') {
+                        message.error("User has already exist")
+                    }
+
+                    if (data.code === 'USER_CREATED') {
+                        if(formRef?.current) {
+                            formRef?.current.resetFields();
+                        }
+                        setHasLoggedIn(true)
+                        message.success("Successfully register")
+                        
+                    }
+                }).catch(error => console.error('Error:', error));
+        } catch (error) {
+            console.error("Login error:", error);
+            message.error("An error occurred during login.");
+        }
+    }
+
     const connectToKeplr = () => {
-        connect({ chainId: ["cosmoshub-4"], walletType: WalletType.KEPLR}).then((data)=> {
+        connect({ chainId: ["cosmoshub-4"], walletType: WalletType.KEPLR }).then((data) => {
             fetch("/api/auth/authenticate", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -75,36 +110,49 @@ export default () => {
                 .then((data: any) => {
                     if (data.authenticated) {
                         login(data.sessionToken)
-                        history.replace('/dashboard')
+                        history.push('/dashboard')
                     }
                 })
                 .catch(error => console.error('Error:', error));
-    
+
 
         });
 
     }
-    
+
+    const handleLogin = (event: any) => {
+        event.preventDefault();
+        setHasLoggedIn(true);
+    }
+
 
     return (
         <ProConfigProvider hashed={false}>
             <div>
                 <LoginForm
+                    formRef={formRef}
                     logo={logo}
                     title="Electrify"
                     subTitle="Welcome to Electrify"
                     actions={
-                        <Space>
+                        !authToken && !hasLoggedIn ? <>Or <a href="" onClick={handleLogin}>Login now!</a></> : <Space>
                             Other
-                            <img src={KeplrLogo} style={iconStyles} alt="Keplr Logo" onClick={connectToKeplr}/>
+                            <img src={KeplrLogo} style={iconStyles} alt="Keplr Logo" onClick={connectToKeplr} />
                         </Space>
                     }
-                    onFinish={async (value) => await handleSubmit(value)}
-                    submitter={{
-                        searchConfig: {
-                            submitText: 'Submit'
+                    onFinish={async (value) => {
+                        if (!authToken && !hasLoggedIn) {
+                            await handleRegister(value)
+                        } else {
+                            await handleSubmit(value)
                         }
                     }}
+                    submitter={{
+                        searchConfig: {
+                            submitText: (!authToken && !hasLoggedIn) ? 'Register' : 'Login'
+                        }
+                    }}
+
                 >
                     <Tabs
                         centered

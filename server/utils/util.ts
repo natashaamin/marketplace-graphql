@@ -32,12 +32,6 @@ const waitTimePromise = async(time: number = 100) => {
     })
 }
 
-
-const timeStringToSeconds = (timeString: any) => {
-    const [hours, minutes, seconds] = timeString.split(':').map(parseFloat);
-    return hours * 3600 + minutes * 60 + seconds;
-};
-
 const verifySignature = (walletAddress: any) => {
     return true;
 }
@@ -46,6 +40,5 @@ export {
     generateDummyItems,
     generateToken,
     waitTimePromise,
-    timeStringToSeconds,
     verifySignature
 }

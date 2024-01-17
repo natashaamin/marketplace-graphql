@@ -40,14 +40,7 @@ passport.use(new JwtStrategy(jwtOptions, (jwtPayload: any, done: AuthenticateCal
 
 passport.use('keplr', new CustomStrategy((req, done) => {
     const { walletAddress } = req.body;
-
-    const isValid = walletAddress && verifySignature(walletAddress);
-
-    if (isValid) {
-        done(null, { walletAddress });
-    } else {
-        done(null, false);
-    }
+    done(null, { walletAddress });
 }));
 
 

@@ -11,13 +11,7 @@ const AuctionResultTable = ({ bidsData, historyData }: any) => {
   const { authToken } = useAuth();
   const { data: account, isConnected } = useAccount();
   const [data, setData] = useState();
-  const [chartData, setChartData] = useState<any>(null);
-
-  useEffect(() => {
-    if (authToken === null || !isConnected) {
-      history.replace('/login');
-    }
-  }, [authToken, isConnected]);
+const [chartData, setChartData] = useState<any>(null);
 
   useEffect(() => {
     setData(bidsData);

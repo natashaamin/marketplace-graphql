@@ -1,3 +1,4 @@
+import { useAccount, useDisconnect } from "graz";
 import React, { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 
@@ -17,6 +18,7 @@ const AuthContext = createContext<AuthContextType>(defaultContextValue);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [authToken, setAuthToken] = useState(sessionStorage.getItem('token'))
+    const { disconnect } = useDisconnect();
 
     const login = (token: any) => {
         sessionStorage.setItem('token', token);
@@ -25,6 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = () => {
         sessionStorage.removeItem('token')
+        disconnect({chainId: ["cosmoshub-4"] });
         setAuthToken(null)
     }
 

@@ -1,4 +1,4 @@
-import { generateDummyItems, timeStringToSeconds } from "../utils/util";
+import { generateDummyItems } from "../utils/util";
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
@@ -124,7 +124,10 @@ export const getBidsFromHistory = (userId: string | number, bidId?: string, pric
 }
 
 export const getTotalTransaction = () => {
-    const transactions = listOfBidItems
+    let transactions: any;
+
+    if(listOfBidItems.length > 0) {
+        transactions = listOfBidItems
         .filter((item: any) => item.transactionDetails != null)
         .map((item: any) => {
             const date = new Date(item.transactionDetails.saleTime);
@@ -134,7 +137,7 @@ export const getTotalTransaction = () => {
                 month: month,
             };
         });
-        
+    }
 
     return transactions;
 }
