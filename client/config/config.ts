@@ -23,7 +23,7 @@ export default defineConfig({
   ],
   proxy: {
     '/api': {
-      'target': process.env.NODE_ENV === 'development' ? 'http://localhost:3001/api/' : 'https://marketplace-server-69nj.onrender.com/',
+      'target': process.env.NODE_ENV === 'development' ? 'http://localhost:3001/api/' : 'https://marketplace-server-69nj.onrender.com/api/',
       'changeOrigin': true,
       'pathRewrite': { '^/api' : '' },
     },

@@ -78,8 +78,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api/auth', authRoute);
-app.use('/api/marketplace', marketRoute);
+app.use('/auth', authRoute);
+app.use('/marketplace', marketRoute);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
