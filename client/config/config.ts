@@ -5,6 +5,11 @@ console.log(process.env.NODE_ENV)
 export default defineConfig({
   routes: [
     {
+      name: '404',
+      path: '*',
+      component: '@/pages/404',
+    },
+    {
       path: '/',
       component: '@/pages/Layouts',
       routes: [
