@@ -171,16 +171,17 @@ const AuctionResultTable = ({ bidsData, historyData }: any) => {
 
           try {
             const response = await fetch(url, {
-              method: 'GET',
+              method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${authToken}`
               },
+              body: JSON.stringify({ walletAddress: account?.bech32Address || null })
             });
 
-            // if (response.status === 401) {
-            //   history.replace("/login");
-            // }
+            if (response.status === 401) {
+              history.replace("/login");
+            }
 
             if (!response.ok) {
               throw new Error('Network response was not ok');

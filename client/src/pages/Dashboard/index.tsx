@@ -60,7 +60,8 @@ const Dashboard = () => {
                     quantity: quantity,
                     startTime: dateString[0],
                     closeTime: dateString[1],
-                    price: price
+                    price: price,
+                    walletAddress: account?.bech32Address || null
                 })
             })
                 .then(response => {
@@ -135,11 +136,12 @@ const Dashboard = () => {
 
         const callTransactions =
             fetch("/api/marketplace/getTotalTransactions", {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${authToken}`
                 },
+                body: JSON.stringify({ walletAddress: account?.bech32Address })
             })
                 .then(response => {
                     if (response.status === 401) {
