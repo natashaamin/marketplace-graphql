@@ -7,7 +7,7 @@ command = "yarn build"
     NODE_ENV = "production"
 
 [[redirects]]
-  from = "/api/*"
+  from = "/*"
   to = "https://marketplace-server-69nj.onrender.com/:splat"
   status = 200
   force = true
