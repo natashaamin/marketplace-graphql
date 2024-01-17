@@ -1,21 +1,23 @@
+# Build settings
 [build]
-base = "/client"
-publish = "/dist"
-command = "yarn build"
+  base = "/client"
+  publish = "/dist"
+  command = "yarn build"
 
 [build.environment]
-    NODE_ENV = "production"
+  NODE_ENV = "production"
 
+# Redirects
 [[redirects]]
-  from = "/*"
+  from = "/api/*"
   to = "https://marketplace-server-69nj.onrender.com/:splat"
   status = 200
   force = true
 
+# Headers
 [[headers]]
   for = "/*"
   [headers.values]
-    Access-Control-Allow-Origin = "https://reliable-belekoy-b39683.netlify.app/"
-    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE"
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type, Authorization"
-    Access-Control-Allow-Credentials = "true"
