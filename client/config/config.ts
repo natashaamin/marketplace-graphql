@@ -3,6 +3,10 @@ import { defineConfig } from 'umi';
 console.log(process.env.NODE_ENV)
 
 export default defineConfig({
+  // using hash - server doesn't need to know about the SPA routes.
+  history: {
+    type: 'hash'
+  },
   routes: [
     {
       name: '404',
