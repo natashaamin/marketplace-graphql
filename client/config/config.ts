@@ -3,6 +3,9 @@ import { defineConfig } from 'umi';
 console.log(process.env.NODE_ENV)
 
 export default defineConfig({
+  history: {
+    type: 'hash'
+  },
   routes: [
     {
       name: '404',
