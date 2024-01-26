@@ -4,13 +4,13 @@ import { User } from "./entity/User"
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: "172.17.0.2",
+    host: "localhost", // change this to ur intended host
     port: 5432,
-    username: "natasha",
-    password: "password",
-    database: "graphql_marketplace",
+    username: "postgres", // change this to ur intended username
+    password: "Honey143!", // change this to ur intended password
+    database: "graphql-marketplace", // change this to ur intended database
     synchronize: true,
-    logging: false,
+    logging: true,
     entities: [User],
     migrations: [],
     subscribers: [],

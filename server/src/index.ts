@@ -1,27 +1,28 @@
 import { AppDataSource } from "./data-source"
-import { User } from "./entity/User"
-import App from './app';
+import * as dotenv from 'dotenv';
+import { createServer } from 'node:http'
+import { createSchema, createYoga } from 'graphql-yoga'
+import { resolvers } from './resolvers';
+import * as path from 'path';
+import { importSchema } from 'graphql-import';
 
-const PORT = 8090;
+dotenv.config({ path: '../.env' });
+
+const PORT = process.env.PORT || 9000;
+
+const typeDefs = importSchema(path.join(__dirname, "./schema.graphql"));
+
+const yoga = createYoga({
+  schema: createSchema({
+    typeDefs,
+    resolvers
+  })
+})
+
+const server = createServer(yoga)
 
 AppDataSource.initialize().then(async () => {
-    const app = App();
-
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`)
-    })
-    // console.log("Inserting a new user into the database...")
-    // const user = new User()
-    // user.firstName = "Timber"
-    // user.lastName = "Saw"
-    // user.age = 25
-    // await AppDataSource.manager.save(user)
-    // console.log("Saved a new user with id: " + user.id)
-
-    // console.log("Loading users from the database...")
-    // const users = await AppDataSource.manager.find(User)
-    // console.log("Loaded users: ", users)
-
-    // console.log("Here you can setup and run express / fastify / any other framework.")
-
-}).catch(error => console.log(error))
+  server.listen(PORT, () => {
+    console.info(`Server is running on http://localhost:${PORT}/graphql`)
+  })
+})
