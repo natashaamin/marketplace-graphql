@@ -4,36 +4,70 @@
    "description": "Awesome project developed with TypeORM.",
    "type": "commonjs",
    "devDependencies": {
+      "@faker-js/faker": "^8.4.0",
       "@types/bcrypt": "^5.0.2",
       "@types/express": "^4.17.21",
+      "@types/faker": "^6.6.9",
       "@types/graphql": "^14.5.0",
+      "@types/ioredis": "^5.0.0",
+      "@types/jest": "^29.5.11",
       "@types/node": "^20.11.6",
+      "@types/node-fetch": "^2.6.11",
+      "@types/request-promise": "^4.1.51",
+      "@types/sparkpost": "^2.1.8",
       "@types/uuid": "^9.0.8",
+      "@types/yup": "^0.32.0",
       "gql2ts": "^1.10.1",
+      "jest": "^29.7.0",
       "nodemon": "^3.0.3",
+      "ts-jest": "^29.1.2",
       "ts-node": "10.9.2",
       "typescript": "5.3.3"
    },
    "dependencies": {
+      "@graphql-tools/schema": "^10.0.2",
+      "@graphql-yoga/node": "^3.9.1",
       "apollo-server": "^3.13.0",
       "apollo-server-express": "^3.13.0",
       "bcrypt": "^5.1.1",
       "class-validator": "^0.14.1",
       "dotenv": "^16.4.1",
       "express": "^4.18.2",
+      "faker": "^6.6.6",
       "graphql": "^16.8.1",
       "graphql-import": "^1.0.2",
+      "graphql-tools": "^9.0.0",
       "graphql-yoga": "^5.1.1",
+      "ioredis": "^5.3.2",
       "nexus": "^1.3.0",
+      "node-fetch": "^3.3.2",
       "pg": "^8.11.3",
       "reflect-metadata": "^0.2.1",
+      "sparkpost": "^2.1.4",
       "type-graphql": "^1.1.1",
       "typeorm": "0.3.19",
-      "uuid": "^9.0.1"
+      "uuid": "^9.0.1",
+      "yup": "^1.3.3"
    },
    "scripts": {
       "start": "nodemon --exec ts-node src/index.ts",
+      "test": "NODE_ENV=test jest --watch",
       "typeorm": "typeorm-ts-node-commonjs",
       "gen-schema-types": "gql2ts src/schema.graphql -o src/types/schema.d.ts"
+   },
+   "jest": {
+      "globalSetup": "./src/testUtils/callSetup.js",
+      "transform": {
+         "^.+\\.tsx?$": "ts-jest"
+      },
+      "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+      "moduleFileExtensions": [
+         "ts",
+         "tsx",
+         "js",
+         "jsx",
+         "json",
+         "node"
+      ]
    }
 }

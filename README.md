@@ -29,3 +29,8 @@ Swagger [API Swagger](https://app.swaggerhub.com/apis-docs/NATASHASIAAMIN/market
 ## Deployment
 Production : [https://reliable-belekoy-b39683.netlify.app/#/login]
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://reliable-belekoy-b39683.netlify.app/login)
+
+## Postgres with Docker
+Postgres with Docker : [https://medium.com/@marvinjungre/get-postgresql-and-pgadmin-4-up-and-running-with-docker-4a8d81048aea]
+
+

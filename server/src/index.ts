@@ -1,28 +1,11 @@
-import { AppDataSource } from "./data-source"
-import * as dotenv from 'dotenv';
-import { createServer } from 'node:http'
-import { createSchema, createYoga } from 'graphql-yoga'
-import { resolvers } from './resolvers';
-import * as path from 'path';
-import { importSchema } from 'graphql-import';
+import express from 'express';
+import { buildApp } from './app';
+import "reflect-metadata";
 
-dotenv.config({ path: '../.env' });
+const app = express();
 
-const PORT = process.env.PORT || 9000;
+export const endpoint = buildApp(app);
 
-const typeDefs = importSchema(path.join(__dirname, "./schema.graphql"));
-
-const yoga = createYoga({
-  schema: createSchema({
-    typeDefs,
-    resolvers
-  })
-})
-
-const server = createServer(yoga)
-
-AppDataSource.initialize().then(async () => {
-  server.listen(PORT, () => {
-    console.info(`Server is running on http://localhost:${PORT}/graphql`)
-  })
-})
+app.listen(4000, () => {
+  console.log(`GraphQL API located at http://localhost:4000${endpoint}`);
+});

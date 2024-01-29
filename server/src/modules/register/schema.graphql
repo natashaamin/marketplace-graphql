@@ -1,0 +1,10 @@
+# import Error from "../shared/Error.graphql"
+
+type Mutation {
+    register(username: String!, password: String!): RegisterRespomse!
+}
+
+type RegisterRespomse {
+    success: Boolean!,
+    errors: [Error]
+}
