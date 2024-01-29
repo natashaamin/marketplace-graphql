@@ -25,8 +25,23 @@ import KeplrLogo from '@/assets/kepler.svg';
 import { useAuth } from '@/hooks/useAuth';
 import styles from './index.less';
 import { useForm } from 'antd/es/form/Form';
+import { gql, useMutation } from '@apollo/client';
 
 type LoginType = 'phone' | 'account';
+
+const REGISTER_MUTATION = gql`
+  mutation Register($username: String!, $password: String!) {
+    register(username: $username, password: $password) {
+      success
+      errors {
+        path
+        message
+      }
+    }
+  }
+`;
+
+
 
 export default () => {
     const { token } = theme.useToken();
@@ -36,6 +51,7 @@ export default () => {
     const [loginType, setLoginType] = useState<LoginType>('account');
     const [hasLoggedIn, setHasLoggedIn] = useState<boolean>(false);
     const formRef = useForm<ProFormInstance>();
+    const [registerResponse, { data, loading, error }] = useMutation(REGISTER_MUTATION);
 
     const iconStyles: CSSProperties = {
         marginInlineStart: '16px',
@@ -71,32 +87,33 @@ export default () => {
     const handleRegister = async (value: any) => {
         const { username, password } = value;
         try {
-            await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-            })
-                .then((response) => { return response.json(); })
-                .then((data: any) => {
-                    if (data.code === 'USER_EXISTS') {
-                        message.error("User has already exist")
-                    }
-
-                    if (data.code === 'USER_CREATED') {
-                        if(formRef?.current) {
-                            formRef?.current.resetFields();
-                        }
-                        setHasLoggedIn(true)
-                        message.success("Successfully register")
-                        
-                    }
-                }).catch(error => console.error('Error:', error));
+            // Perform the mutation and wait for the response
+            const response = await registerResponse({ variables: { username, password } });
+    
+            // Extract data from the mutation response
+            const { data } = response;
+            if (data && data.register) {
+                const { success, errors } = data.register;
+    
+                if (success) {
+                    // Handle successful registration
+                    formRef?.current?.resetFields();
+                    setHasLoggedIn(true);
+                    message.success("Successfully registered");
+                } else if (errors && errors.length > 0) {
+                    // Display errors from the server
+                    errors.forEach((error: any) => {
+                        message.error(error.message);
+                    });
+                }
+            }
         } catch (error) {
-            console.error("Login error:", error);
-            message.error("An error occurred during login.");
+            // Handle network or server errors
+            console.error("Register error:", error);
+            message.error("An error occurred during registration.");
         }
-    }
-
+    };
+    
     const connectToKeplr = () => {
         connect({ chainId: ["cosmoshub-4"], walletType: WalletType.KEPLR }).then((data) => {
             fetch("/api/auth/authenticate", {

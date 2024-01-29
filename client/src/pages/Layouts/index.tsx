@@ -8,6 +8,7 @@ import { ConfigProvider, message } from 'antd';
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { AuthProvider } from '@/hooks/useAuth';
 import enUSIntl from 'antd/lib/locale/en_US';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 export default () => {
   const cosmoshub: ChainInfo = {
@@ -27,8 +28,14 @@ export default () => {
     enUSIntl,
   };  
 
+  const apolloClient = new ApolloClient({
+    uri: 'http://localhost:4000/graphql',
+    cache: new InMemoryCache()
+  })
+
   return (
-    <ConfigProvider locale={intlMap['enUSIntl']}>
+    <ApolloProvider client={apolloClient}>
+      <ConfigProvider locale={intlMap['enUSIntl']}>
       <GrazProvider grazOptions={{
         chains: [cosmoshub],
         defaultWallet: WalletType.KEPLR,
@@ -41,5 +48,6 @@ export default () => {
         </AuthProvider>
       </GrazProvider>
       </ConfigProvider>
+    </ApolloProvider>
   );
 }
