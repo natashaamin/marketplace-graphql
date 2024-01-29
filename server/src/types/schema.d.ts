@@ -38,6 +38,11 @@ export declare namespace GQL {
     username: string;
     password: string;
   }
+
+  interface ILoginOnMutationArguments {
+    username: string;
+    password: string;
+  }
 }
 
 // tslint:enable

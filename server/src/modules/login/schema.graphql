@@ -1,10 +1,11 @@
 # import Error from "../shared/Error.graphql"
 
 type Mutation {
-    register(username: String!, password: String!): RegisterResponse!
+    login(username: String!, password: String!): LoginResponse!
 }
 
-type RegisterResponse {
+type LoginResponse {
     success: Boolean!,
+    token: String!,
     errors: [Error]
 }

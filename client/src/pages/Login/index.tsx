@@ -26,22 +26,9 @@ import { useAuth } from '@/hooks/useAuth';
 import styles from './index.less';
 import { useForm } from 'antd/es/form/Form';
 import { gql, useMutation } from '@apollo/client';
+import { LOGIN_MUTATION, REGISTER_MUTATION } from '@/services/authService';
 
 type LoginType = 'phone' | 'account';
-
-const REGISTER_MUTATION = gql`
-  mutation Register($username: String!, $password: String!) {
-    register(username: $username, password: $password) {
-      success
-      errors {
-        path
-        message
-      }
-    }
-  }
-`;
-
-
 
 export default () => {
     const { token } = theme.useToken();
@@ -51,7 +38,8 @@ export default () => {
     const [loginType, setLoginType] = useState<LoginType>('account');
     const [hasLoggedIn, setHasLoggedIn] = useState<boolean>(false);
     const formRef = useForm<ProFormInstance>();
-    const [registerResponse, { data, loading, error }] = useMutation(REGISTER_MUTATION);
+    const [registerResponse] = useMutation(REGISTER_MUTATION);
+    const [loginResponse] = useMutation(LOGIN_MUTATION);
 
     const iconStyles: CSSProperties = {
         marginInlineStart: '16px',
@@ -65,18 +53,19 @@ export default () => {
     const handleSubmit = async (value: any) => {
         const { username, password } = value;
         try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-            });
+            const response = await loginResponse({ variables: { username, password }});
+            const { data } = response;
 
-            const data = await response.json();
-            if (response.ok && data.authenticated) {
-                login(data.token)
-                history.push('/dashboard')
-            } else {
-                message.error("Login failed: " + (data.message || 'Unauthorized'));
+            if(data && data.login) {
+                const { success, errors, token } = data.login;
+                if (success) {
+                    login(token)
+                    history.push('/dashboard')
+                } else if (errors && errors.length > 0) {
+                    errors.forEach((error: any) => {
+                        message.error(error.message);
+                    });               
+                }
             }
         } catch (error) {
             console.error("Login error:", error);

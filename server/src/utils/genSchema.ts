@@ -16,6 +16,6 @@ export const genSchema = () => {
 
   return makeExecutableSchema({
     typeDefs: mergeTypeDefs(graphqlTypes),
-    resolvers: mergeResolvers(resolvers)
+    resolvers: mergeResolvers(resolvers),
   });
 };

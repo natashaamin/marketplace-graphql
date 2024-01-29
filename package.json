@@ -14,14 +14,19 @@
     "start": "concurrently \"yarn start:client\" \"yarn start:server\""
   },
   "dependencies": {
+    "@apollo/server": "^4.10.0",
     "concurrently": "^8.2.2",
-    "typescript": "^5.0.4",
     "dayjs": "^1.11.10",
-    "ts-node": "^10.9.2"
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.4"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/lodash": "^4.14.202",
     "lint-staged": "^10.0.7",
-    "prettier": "^2.2.0",
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.2",
+    "prettier": "^2.2.0"
   }
 }

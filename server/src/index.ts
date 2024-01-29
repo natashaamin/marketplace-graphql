@@ -4,7 +4,7 @@ import "reflect-metadata";
 
 const app = express();
 
-export const endpoint = buildApp(app);
+const endpoint = buildApp(app);
 
 app.listen(4000, () => {
   console.log(`GraphQL API located at http://localhost:4000${endpoint}`);
