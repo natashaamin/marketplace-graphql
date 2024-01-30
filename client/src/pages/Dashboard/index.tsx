@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import styles from './index.less';
 import { useTranslation as t } from "@/hooks/useTranslation";
-import { Button, TimePicker, TimeRangePickerProps, Form, Input, message, Card, Statistic, notification } from "antd";
+import { Button, DatePicker, TimeRangePickerProps, Form, Input, message, Card, Statistic, notification } from "antd";
 import { AuctionResultTable, CustomizeModal, DemoChart, NavBar } from "@/components";
 import { ProCard } from "@ant-design/pro-components";
 import { connect, useAccount, useConnect } from "graz";
@@ -11,9 +11,11 @@ import { TimePickerProps } from "antd/lib";
 import { CustomizeModalHandles } from "@/components/CustomizeModal";
 import Countdown from "antd/es/statistic/Countdown";
 import { NotificationPlacement } from "antd/es/notification/interface";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_ALL_BIDS, GET_HISTORY, SENDBID_MUTATION } from "@/services/marketService";
 
 const Dashboard = () => {
-    const { RangePicker } = TimePicker as any;
+    const { RangePicker } = DatePicker as any;
     const [tab, setTab] = useState('tab1');
     const modalRef = useRef<CustomizeModalHandles>(null);
     const [bidData, setBidData] = useState<API.IHistoryItems[]>([]);
@@ -28,10 +30,10 @@ const Dashboard = () => {
     const [currentBestBid, setCurrentBestBid] = useState(0)
     const [countdownPaused, setCountdownPaused] = useState(false);
     const { data: account, isConnected } = useAccount();
-
-    console.log(process.env.NODE_ENV,">>>env")
-
-
+    const [sendBidResponse] = useMutation(SENDBID_MUTATION);
+    const { error: errorAllBids, data: dataAllBids } = useQuery(GET_ALL_BIDS);
+    const { error: errorHistory, data: dataHistory } = useQuery(GET_HISTORY);
+    
     const handleChange = (e: any) => {
         e.preventDefault();
     }
@@ -48,51 +50,87 @@ const Dashboard = () => {
         }
     };
 
-    const handleOnBid = () => {
+    const getAllBids = async () => {
+        if (dataAllBids && dataAllBids.getBids) {
+            const { success, bids } = dataAllBids.getBids;
+            if (success && bids.length > 0) {
+                const acceptedItems = bids.filter((item: any) => item.status === "ACCEPTED");
+
+                if (acceptedItems.length > 0) {
+                    const highestPriceItem = acceptedItems.reduce((maxItem: any, currentItem: any) => {
+                        const maxPrice = parseFloat(maxItem.price);
+                        const currentPrice = parseFloat(currentItem.price);
+                        return currentPrice > maxPrice ? currentItem : maxItem;
+                    }, acceptedItems[0]);
+
+                    setCurrentBestBid(highestPriceItem.price);
+                }
+
+                message.success("Successful")
+                form.resetFields();
+            }
+        }
+    }
+
+    const handleOnBid = async () => {
         if (isConnected || authToken) {
-            fetch("/api/marketplace/sendBid", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`
-                },
-                body: JSON.stringify({
-                    quantity: quantity,
-                    startTime: dateString[0],
-                    closeTime: dateString[1],
-                    price: price,
-                    walletAddress: account?.bech32Address || null
-                })
-            })
-                .then(response => {
-                    if (response.status === 401) {
-                        history.replace("/login")
-                    }
-                    return response.json()
-                })
-                .then(data => {
-                    if (data.code === "PARAM_MISSING") {
-                        message.error(data.message)
+            try {
+                const response = await sendBidResponse({ variables: { price: parseInt(price), quantity: parseInt(quantity), startTime: dateString[0], endTime: dateString[1] } });
+                const { data } = response;
+
+                if (data && data.sendBid) {
+                    const { success, errors } = data.sendBid;
+                    if (success) {
+                        await getAllBids();
                     }
 
-                    if (data.code === "SUCCESS") {
-                        const acceptedItems = data?.data.listOfItems.filter((item: any) => item.status === "ACCEPTED");
+                }
+            } catch (err) {
+                console.error('Error:', err)
+            }
+            // fetch("/api/marketplace/sendBid", {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Authorization': `Bearer ${authToken}`
+            //     },
+            //     body: JSON.stringify({
+            //         quantity: quantity,
+            //         startTime: dateString[0],
+            //         closeTime: dateString[1],
+            //         price: price,
+            //         walletAddress: account?.bech32Address || null
+            //     })
+            // })
+            //     .then(response => {
+            //         if (response.status === 401) {
+            //             history.replace("/login")
+            //         }
+            //         return response.json()
+            //     })
+            //     .then(data => {
+            //         if (data.code === "PARAM_MISSING") {
+            //             message.error(data.message)
+            //         }
 
-                        if (acceptedItems.length > 0) {
-                            const highestPriceItem = acceptedItems.reduce((maxItem: any, currentItem: any) => {
-                                const maxPrice = parseFloat(maxItem.price);
-                                const currentPrice = parseFloat(currentItem.price);
-                                return currentPrice > maxPrice ? currentItem : maxItem;
-                            }, acceptedItems[0]);
+            //         if (data.code === "SUCCESS") {
+            //             const acceptedItems = data?.data.listOfItems.filter((item: any) => item.status === "ACCEPTED");
 
-                            setCurrentBestBid(highestPriceItem.price);
-                        }
+            //             if (acceptedItems.length > 0) {
+            //                 const highestPriceItem = acceptedItems.reduce((maxItem: any, currentItem: any) => {
+            //                     const maxPrice = parseFloat(maxItem.price);
+            //                     const currentPrice = parseFloat(currentItem.price);
+            //                     return currentPrice > maxPrice ? currentItem : maxItem;
+            //                 }, acceptedItems[0]);
 
-                        message.success("Successful")
-                        form.resetFields();
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+            //                 setCurrentBestBid(highestPriceItem.price);
+            //             }
+
+            //             message.success("Successful")
+            //             form.resetFields();
+            //         }
+            //     })
+            //     .catch(error => console.error('Error:', error));
 
         } else {
             history.push('/login')
@@ -116,55 +154,21 @@ const Dashboard = () => {
             placement,
         });
 
-        setTab('tab2');
-        const callHistory =
-            fetch("/api/marketplace/getHistory", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`
-                },
-                body: JSON.stringify({ walletAddress: account?.bech32Address })
-            })
-                .then(response => {
-                    if (response.status === 401) {
-                        history.replace("/login")
-                    }
-                    return response.json()
-                })
-                .catch(error => console.error('Error:', error));
+        setTab('tab2');    
 
-        const callTransactions =
-            fetch("/api/marketplace/getTotalTransactions", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`
-                },
-                body: JSON.stringify({ walletAddress: account?.bech32Address })
-            })
-                .then(response => {
-                    if (response.status === 401) {
-                        history.replace("/login")
-                    }
-                    return response.json()
-                })
-                .catch(error => console.error('Error:', error));
+        if (dataAllBids && dataAllBids.getBids) {
+            const { success, bids } = dataAllBids.getBids;
+            if (success && bids.length > 0) {
+                setBidData(bids)
+            }
+        }
 
-        Promise.all([callHistory, callTransactions])
-            .then(([data1, data2]) => {
-                const newData = data1.data.map((x: any, index: number) => {
-                    return {
-                        key: index,
-                        ...x
-                    }
-                })
-                setBidData(newData)
-                setHistoryData(data2)
-            })
-            .catch(error => {
-                console.error('An error occurred:', error);
-            });
+        if (dataHistory && dataHistory.getHistory) {
+            const { success, bids } = dataHistory.getHistory;
+            if (success && bids.length > 0) {
+                setHistoryData(bids)
+            }
+        }
     };
 
     return (
@@ -211,7 +215,7 @@ const Dashboard = () => {
                                     <Form.Item name="rangePicker" rules={[{ required: true, message: 'Please input your time!' }]}
                                     >
                                         <RangePicker
-                                            showTime={{ format: 'HH:mm' }}
+                                            showTime
                                             onChange={onChange}
                                         />
 

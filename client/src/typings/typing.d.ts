@@ -18,7 +18,7 @@ declare namespace API {
     bidId: string | number;
     quantity: string;
     startTime: string;
-    closeTime: string;
+    endTime: string;
     price: string;
     status: string;
     transactionDetails: ITransactionDetails;

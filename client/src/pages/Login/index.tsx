@@ -1,16 +1,10 @@
 import {
-    AlipayCircleOutlined,
     LockOutlined,
-    MobileOutlined,
-    TaobaoCircleOutlined,
     UserOutlined,
-    WeiboCircleOutlined,
 } from '@ant-design/icons';
 import {
     LoginForm,
     ProConfigProvider,
-    ProFormCaptcha,
-    ProFormCheckbox,
     ProFormInstance,
     ProFormText,
     setAlpha,
