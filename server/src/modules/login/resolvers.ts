@@ -1,11 +1,11 @@
 import { User } from "../../entity/User";
 import { ResolverMap } from "../../types/graphql-utils";
-import { GQL } from "../../types/schema";
 import { formatYupError } from "../../utils/formatYupError";
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { pick } from 'lodash';
 import { invalidPassword, invalidUser } from "./errorMessages";
+import { GQL } from "../../types/schema";
 
 export const resolvers: ResolverMap = {
     Mutation: {

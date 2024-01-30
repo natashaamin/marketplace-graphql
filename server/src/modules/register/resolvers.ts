@@ -1,11 +1,11 @@
 import * as bcrypt from 'bcrypt';
 import * as yup from 'yup';
 import { ResolverMap } from '../../types/graphql-utils';
-import { GQL } from '../../types/schema';
 import { User } from '../../entity/User';
 import { duplicateEmail, emailNotLongEnough, invalidEmail } from './errorMessages';
 import { registerPasswordValidation } from '../../../yupSchemas';
 import { formatYupError } from '../../utils/formatYupError';
+import { GQL } from '../../types/schema';
 // import { createConfirmEmailLink } from './createConfirmEmailLink';
 
 const schema = yup.object().shape({

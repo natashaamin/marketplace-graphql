@@ -1,0 +1,49 @@
+# import Error from "../shared/Error.graphql"
+
+type Mutation {
+    sendBid(price: Int!, quantity: Int!, startTime: String!, endTime: String!): SendBidResponse!
+    searchBid(id: ID, price: Int, quantity: Int, startTime: String, endTime: String): GetBidsResponse!
+}
+
+type Query {
+    getBids: GetBidsResponse!
+    getHistory: GetHistoryResponse!
+}
+
+type SendBidResponse {
+    success: Boolean!,
+    errors: [Error]
+}
+
+type GetBidsResponse {
+  success: Boolean!
+  errors: [Error]
+  bids: [Bid]
+}
+
+type GetHistoryResponse {
+    success: Boolean!
+    errors: [Error]
+    bids: [AcceptedBidReponse]
+}
+
+type AcceptedBidReponse {
+    id: ID!,
+    finalPrice: Int,
+    quantitySold: Int,
+    saleTime: String,
+}
+
+type Bid {
+    id: ID!,
+    price: Int,
+    quantity: Int,
+    status: String,
+    startTime: String,
+    endTime: String
+}
+
+type BidResponse {
+    success: Boolean!,
+    errors: [Error]
+}

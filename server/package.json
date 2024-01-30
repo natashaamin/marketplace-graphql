@@ -25,12 +25,14 @@
       "typescript": "5.3.3"
    },
    "dependencies": {
+      "@gql2ts/from-schema": "^2.0.0-4",
       "@graphql-tools/schema": "^10.0.2",
       "@graphql-yoga/node": "^3.9.1",
       "apollo-server": "^3.13.0",
       "apollo-server-express": "^3.13.0",
       "bcrypt": "^5.1.1",
       "class-validator": "^0.14.1",
+      "dayjs": "^1.11.10",
       "dotenv": "^16.4.1",
       "express": "^4.18.2",
       "faker": "^6.6.6",
@@ -50,10 +52,10 @@
       "yup": "^1.3.3"
    },
    "scripts": {
-      "start": "nodemon --exec ts-node src/index.ts",
+      "start": "nodemon --exec ts-node --files src/index.ts",
       "test": "NODE_ENV=test jest --watch",
       "typeorm": "typeorm-ts-node-commonjs",
-      "gen-schema-types": "gql2ts src/schema.graphql -o src/types/schema.d.ts"
+      "gen-schema-types": "ts-node src/utils/createTypes.ts"
    },
    "jest": {
       "globalSetup": "./src/testUtils/callSetup.js",
